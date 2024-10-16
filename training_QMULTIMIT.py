@@ -1,4 +1,5 @@
-from pytorch_lightning import Trainer
+import os
+from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.loggers import WandbLogger
 import wandb
 from model import SeldTrainer
@@ -7,18 +8,33 @@ from QMULTIMIT import QMULLIMITDataModule
 
 if __name__ == "__main__":
     # QMULTIMIT
-    path_audios = 'real datasets/QMUL_TIMIT'      
-    pathNoisesTraining = "noise_dataset/training_noise"
-    pathNoisesVal = "noise_dataset/val_noise"
-    pathNoisesTest = "noise_dataset/test_noise"
+    data_dir = '/mnt/data3'
+    path_audios = os.path.join(data_dir, 'SDE/real_datasets/QMULTIMIT' )    
+    pathNoisesTraining = os.path.join(data_dir, "whamr/max/tr")
+    pathNoisesVal = os.path.join(data_dir, "whamr/max/cv")
+    pathNoisesTest = os.path.join(data_dir, "whamr/max/tt")
+    # pathNoisesTraining = os.path.join(data_dir, "noise_dataset/training_noise")
+    # pathNoisesVal = os.path.join(data_dir, "noise_dataset/val_noise")
+    # pathNoisesTest = os.path.join(data_dir, "noise_dataset/test_noise")
 
     # FIXED PARAMS
+    # config = {
+    #     "max_epochs": 50,
+    #     "batch_size": 16,
+    #     "lr": 0.001,
+    #     "sampling_frequency": 16000,
+    #     "dBNoise" : [30, 20 , 10, 0, -10],
+    #     "kernels": ["freq"],
+    #     "n_grus": [2],
+    #     "features_set": ["all"],
+    #     "att_conf": ["Nothing", "onSpec"]
+    # }
     config = {
-        "max_epochs": 50,
+        "max_epochs": 5,
         "batch_size": 16,
         "lr": 0.001,
         "sampling_frequency": 16000,
-        "dBNoise" : [30, 20 , 10, 0, -10],
+        "dBNoise" : [30],
         "kernels": ["freq"],
         "n_grus": [2],
         "features_set": ["all"],
@@ -29,6 +45,7 @@ if __name__ == "__main__":
             for kernel in config['kernels']:
                 for features in config['features_set']:
                     for att_conf in config['att_conf']:
+                        seed_everything(42) # workers=True
                         # all_results = pd.DataFrame([], columns = ["GT", "Pred", "L1", "rL1", "ID"])
                         run_name = "Kernels{}_Gru{}_Features_{}Att_conf{}_QMULTIMIT_{}dB".format(kernel, n_gru, features, att_conf, db)
                         model = SeldTrainer(lr=config["lr"], kernels = kernel, n_grus = n_gru, features_set = features, att_conf = att_conf)
@@ -41,11 +58,12 @@ if __name__ == "__main__":
                                     )
                         trainer = Trainer(
                                             accelerator="gpu",
-                                            devices = 1,
+                                            devices = [6],
                                             log_every_n_steps = 50,
                                             max_epochs=config["max_epochs"],
                                             precision = 32,
                                             logger=wandb_logger,
+                                            deterministic=True
                                         )
                         wandb_logger.log_hyperparams(config)
                         wandb_logger.watch(model, log_graph=False)
