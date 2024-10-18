@@ -161,3 +161,7 @@ cython_debug/
 
 # Weights and biases
 wandb/
+
+# Training outputs
+*.csv
+*.ckpt

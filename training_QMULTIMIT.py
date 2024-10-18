@@ -10,9 +10,11 @@ if __name__ == "__main__":
     # QMULTIMIT
     data_dir = '/mnt/data3'
     path_audios = os.path.join(data_dir, 'SDE/real_datasets/QMULTIMIT' )    
-    pathNoisesTraining = os.path.join(data_dir, "whamr/max/tr")
-    pathNoisesVal = os.path.join(data_dir, "whamr/max/cv")
-    pathNoisesTest = os.path.join(data_dir, "whamr/max/tt")
+    pathNoisesTraining = os.path.join(data_dir, "whamr/wav16k/max/tr/noise")
+    pathNoisesVal = os.path.join(data_dir, "whamr/wav16k/max/cv/noise")
+    pathNoisesTest = os.path.join(data_dir, "whamr/wav16k/max/tt/noise")
+    ll = os.path.join(pathNoisesTraining)
+    print(ll)
     # pathNoisesTraining = os.path.join(data_dir, "noise_dataset/training_noise")
     # pathNoisesVal = os.path.join(data_dir, "noise_dataset/val_noise")
     # pathNoisesTest = os.path.join(data_dir, "noise_dataset/test_noise")
@@ -30,11 +32,11 @@ if __name__ == "__main__":
     #     "att_conf": ["Nothing", "onSpec"]
     # }
     config = {
-        "max_epochs": 5,
+        "max_epochs": 50,
         "batch_size": 16,
         "lr": 0.001,
         "sampling_frequency": 16000,
-        "dBNoise" : [30],
+        "dBNoise" : [None],
         "kernels": ["freq"],
         "n_grus": [2],
         "features_set": ["all"],

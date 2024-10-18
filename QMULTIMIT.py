@@ -26,6 +26,7 @@ class QMULLIMIT(Dataset):
         path = join(self.path_audios, self.list_all_files[index])
         sound, _ = lb.load(path, sr = self.fs, mono = True, res_type = "kaiser_fast")
         if self.dBNoise is not None:
+            print(f"List all noises {len(self.list_all_noises)}")
             random_index_noise = np.random.randint(low = 0, high = len(self.list_all_noises))
             selected_noise_file = self.list_all_noises[random_index_noise]
             audio_noise, _ = lb.load(join(self.pathNoises, selected_noise_file), sr = self.fs, mono = True, res_type = "kaiser_fast")
@@ -113,7 +114,7 @@ class QMULLIMITDataModule(LightningDataModule):
         pass
     
     def train_dataloader(self):
-        return DataLoader(QMULLIMIT(join(self.path_dataset, "train",), pathNoises = self.pathNoiseTraining, dBNoise = self.dBNoise, fs = self.fs), batch_size = self.batch_size, shuffle = True, drop_last = False) 
+        return DataLoader(QMULLIMIT(join(self.path_dataset, "train",), pathNoises = self.pathNoiseTraining, dBNoise = self.dBNoise, fs = self.fs), batch_size = self.batch_size, shuffle = False, drop_last = False) 
     
     def val_dataloader(self):
         return DataLoader(QMULLIMIT(join(self.path_dataset, "val"), pathNoises = self.pathNoiseVal, dBNoise = self.dBNoise, fs = self.fs), batch_size = self.batch_size, shuffle = False, drop_last = False)
@@ -133,7 +134,7 @@ if __name__ == "__main__":
     pathNoisesTraining = "noise_dataset/training_noise"
     pathNoisesVal = "noise_dataset/val_noise"
     pathNoisesTest = "noise_dataset/test_noise"
-    datamodule = QMULLIMITDataModule(path_dataset = path_audios, batch_size = 4, pathNoisesTraining = pathNoisesTraining, pathNoisesVal = pathNoisesVal, pathNoisesTest = pathNoisesTest, db = 10)
+    datamodule = QMULLIMITDataModule(path_dataset = path_audios, batch_size = 4, pathNoisesTraining = pathNoisesTraining, pathNoisesVal = pathNoisesVal, pathNoisesTest = pathNoisesTest, db = 10) #shuffle=True
     dataloader_datamodule_training = datamodule.train_dataloader()
     dataloader_datamodule_val = datamodule.val_dataloader()
     dataloader_datamodule_test = datamodule.test_dataloader()
