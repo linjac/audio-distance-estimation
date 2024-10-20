@@ -114,7 +114,7 @@ class QMULLIMITDataModule(LightningDataModule):
         pass
     
     def train_dataloader(self):
-        return DataLoader(QMULLIMIT(join(self.path_dataset, "train",), pathNoises = self.pathNoiseTraining, dBNoise = self.dBNoise, fs = self.fs), batch_size = self.batch_size, shuffle = False, drop_last = False) 
+        return DataLoader(QMULLIMIT(join(self.path_dataset, "train",), pathNoises = self.pathNoiseTraining, dBNoise = self.dBNoise, fs = self.fs), batch_size = self.batch_size, shuffle = True, drop_last = False) 
     
     def val_dataloader(self):
         return DataLoader(QMULLIMIT(join(self.path_dataset, "val"), pathNoises = self.pathNoiseVal, dBNoise = self.dBNoise, fs = self.fs), batch_size = self.batch_size, shuffle = False, drop_last = False)

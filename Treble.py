@@ -10,8 +10,8 @@ from pytorch_lightning import LightningDataModule
 class Treble(Dataset):
     def __init__(self,
                 path_audios,
-                path_Noises = None, 
-                dbNoise = None,
+                pathNoises = None, 
+                dBNoise = None,
                 fs = 16000
         ):
         self.path_audios = path_audios
@@ -102,17 +102,26 @@ class TrebleDataModule(LightningDataModule):
         
     def prepare_data(self):
         '''
-            Do something. Convolve?
+            Nothing to do
         '''
-        self.audio_train = 
-        self.audio_val = 
-        self.audio_test = 
+        pass
         
-    
     def setup(self, stage = None):
         '''
-            Do something?
+        Nothing to do
         '''
-        
+        pass
+
     def train_dataloader(self):
-        return Dataloader(Treble(join(self.dataset_)))
+        return DataLoader(Treble(join(self.path_dataset, "train",), pathNoises = self.pathNoiseTraining, dBNoise = self.dBNoise, fs = self.fs) ,
+                          batch_size = self.batch_size, shuffle = True, drop_last = False)
+    
+    def val_dataloader(self):
+        return DataLoader(Treble(join(self.path_dataset, "val",),  pathNoises = self.pathNoiseVal, dBNoise = self.dBNoise, fs = self.fs), 
+                          batch_size = self.batch_size, shuffle = False, drop_last = False)
+    
+    def test_dataloader(self):
+        return DataLoader(Treble(join(self.path_dataset, "test",),  pathNoises = self.pathNoiseTest, dBNoise = self.dBNoise, fs = self.fs), 
+                          batch_size = self.batch_size, shuffle = False, drop_last = False)
+    
+    
