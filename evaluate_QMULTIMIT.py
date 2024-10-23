@@ -9,7 +9,7 @@ from QMULTIMIT import QMULLIMITDataModule
 if __name__ == "__main__":
     # QMULTIMIT
     data_dir = '/mnt/data3'
-    path_audios = os.path.join(data_dir, 'SDE/real_datasets/QMULVCTK/wav16k' )    
+    path_audios = os.path.join(data_dir, 'SDE/real_datasets/QMULTIMIT' )    
     pathNoisesTraining = os.path.join(data_dir, "whamr/wav16k/max/tr/noise")
     pathNoisesVal = os.path.join(data_dir, "whamr/wav16k/max/cv/noise")
     pathNoisesTest = os.path.join(data_dir, "whamr/wav16k/max/tt/noise")
@@ -49,12 +49,12 @@ if __name__ == "__main__":
                     for att_conf in config['att_conf']:
                         seed_everything(42) # workers=True
                         # all_results = pd.DataFrame([], columns = ["GT", "Pred", "L1", "rL1", "ID"])
-                        run_name = "Kernels{}_Gru{}_Features_{}Att_conf{}_QMULVCTK_{}dB".format(kernel, n_gru, features, att_conf, db)
+                        run_name = "Kernels{}_Gru{}_Features_{}Att_conf{}_QMULTIMIT_{}dB".format(kernel, n_gru, features, att_conf, db)
                         model = SeldTrainer(lr=config["lr"], kernels = kernel, n_grus = n_gru, features_set = features, att_conf = att_conf)
                         datamodule = QMULLIMITDataModule(path_dataset = path_audios, batch_size = config["batch_size"], pathNoisesTraining=pathNoisesTraining,
                                         pathNoisesVal=pathNoisesVal, pathNoisesTest=pathNoisesTest, db = db)
                         wandb_logger = WandbLogger(
-                                        project="Distance-Estimation-QMULVCTK",
+                                        project="Distance-Estimation-RQ1",
                                         name="{} Noisy {}".format(run_name, db),
                                         tags=["TABLE4", "Hybrid"],
                                     )

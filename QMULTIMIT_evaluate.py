@@ -80,11 +80,10 @@ class QMULLIMIT(Dataset):
         _, max_ylim = plt.ylim()
         plt.text(distances.mean()*1.05, max_ylim*0.9, 'Mean: {:.2f} m'.format(distances.mean()))
         plt.grid(alpha = 0.2)
-        plt.title("QMULVCTK distance distribution")
-        # plt.title("QMULTIMIT distance distribution")
+        plt.title("QMULTIMIT distance distribution")
         plt.xlabel("Distance [m]")
         plt.ylabel("Occurrences")
-        plt.savefig("QMULVCTK test.pdf", transparent = True)
+        plt.savefig("QMULTIMIT test.pdf", transparent = True)
         plt.show()
 
         
@@ -126,8 +125,7 @@ class QMULLIMITDataModule(LightningDataModule):
     def all_dataloader(self):
         return DataLoader(QMULLIMIT(join(self.path_dataset, "all"), pathNoises = self.pathNoiseTest, dBNoise = self.dBNoise, fs = self.fs), batch_size = self.batch_size, shuffle = False, drop_last = False)
 
-    def eval_dataloader(self):
-        return DataLoader(QMULLIMIT(join(self.path_dataset, "eval"), pathNoises = self.pathNoiseTest, dBNoise = self.dBNoise, fs = self.fs), batch_size = self.batch_size, shuffle = False, drop_last = False)
+    
 
 if __name__ == "__main__":
     plt.rcParams["font.family"] = "Times New Roman"
